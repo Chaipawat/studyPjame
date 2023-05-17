@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Title from "../../components/Text/Title";
-import { Grid, Box } from "@mui/material";
+import { Grid, Box, Button } from "@mui/material";
 
-function Showtitle({text,content}) {
+function Showtitle({ text, content }) {
   return (
     <Grid>
       <Title text={text} content={content} isfix={false} />
@@ -10,31 +10,41 @@ function Showtitle({text,content}) {
   );
 }
 
-// function loop() {
-//   let show = [];
-//   for (let i = 0; i < 2; i++) {
-//     show.push(<Showtitle key={i}/>);
-//   }
-//   return show
-// }
+function greenshow({ arrgreen, setArrgreen }) {
 
-function Green() {
-  let arr = [{text:"title",content:"content"},{text:"head",content:"body"}]
+
+  // useEffect(() => {
+    // console.log("arrgreen : ", arrgreen);
+  // }, [arrgreen]);
+
   return (
-    <div style={{ background: "green", marginTop: "5%" }}>
-      {arr.map((obj,index) => {
-        return(
-        <Showtitle 
-          text={obj.text}
-          content={obj.content}
-        />
-        )
+    <>
+      {arrgreen.map((obj, index) => {
+        return (
+          <div style={{ background: obj.background, marginTop: obj.marginTop }}>
+            {greenBox1(obj)}
+            {greenBox2(obj)}
+          </div>
+        );
       })}
-
-      {/* {loop()} */}
-      {/* <Showtitle /> */}
-    </div>
+    </>
   );
 }
 
-export default Green;
+function greenBox1(object) {
+  return (
+    <>
+      <Showtitle text={object.title} content={object.content} />
+    </>
+  );
+}
+
+function greenBox2(object) {
+  return (
+    <>
+      <Showtitle text={object.head} content={object.body} />
+    </>
+  );
+}
+
+export default greenshow;

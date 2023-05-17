@@ -10,34 +10,15 @@ function ShowYellow({ text, content, isfix }) {
   );
 }
 
-function Yellow2({ form, arrtemp, setArrtemp, setInput1, setInput2,setEditmode}) {
-  // let arrtemp = [
-  //   { id: 1, background: "yellow", marginTop: "11%" }
-  // ];
-
-  // let arr = []
-
-  // for(let i = 0 ; i < number; i++){
-  //   arr.push(arrtemp[0])
-  // }
-
-  // useEffect(() => {
-  // console.log("form : ", form);
-  // if(form.issend == true){
-  //   arrtemp.push({
-  //     id:arrtemp.length+1,
-  //     background: "yellow",
-  //     marginTop: "11%",
-  //     ...form
-  //   })
-  // setform(previous=>({
-  //   ...previous ,
-  //   input1:"",
-  //   input2:"",
-  //   issend:false,
-  // }))
-  //   }
-  // }, [form]);
+function Yellow2({
+  form,
+  arrtemp,
+  setArrtemp,
+  setInput1,
+  setInput2,
+  setEditmode,
+  setEditindex,
+}) {
 
   useEffect(() => {
     // console.log("arrtemp : ", arrtemp);
@@ -70,33 +51,39 @@ function Yellow2({ form, arrtemp, setArrtemp, setInput1, setInput2,setEditmode})
   function clone(index3) {
     let newclone = [...arrtemp];
     let temp = arrtemp.find((obj, index) => index3 === index); //find หา index เก็บลง temp
-  
+
     let filterTemp = arrtemp.filter((obj) => obj.input2.includes(temp.input2)); //incldes => หาคำที่อยู่ข้างใน หาว่ามี input 2 กี่ตัว มีมากกว่าหนึ่งตัว
-  
-    if (filterTemp.length > 1) { //เช็คความยาวถ้ามีมากกว่า 1 เช่น {123,123-COPY} ให้ต่อ -COPY + จำนวนเข้าไป
-        newclone.push({ ...temp, input2: temp.input2 + '-COPY' + filterTemp.length}) 
-    } else if (filterTemp.length == 1) { //ถ้ามีแค่ 1 {123} ให้ต่อแค่ -COPY
-    newclone.push({ ...temp, input2: temp.input2 + '-COPY'})
+
+    if (filterTemp.length > 1) {
+      //เช็คความยาวถ้ามีมากกว่า 1 เช่น {123,123-COPY} ให้ต่อ -COPY + จำนวนเข้าไป
+      newclone.push({
+        ...temp,
+        input2: temp.input2 + "-COPY" + filterTemp.length,
+      });
+    } else if (filterTemp.length == 1) {
+      //ถ้ามีแค่ 1 {123} ให้ต่อแค่ -COPY
+      newclone.push({ ...temp, input2: temp.input2 + "-COPY" });
     }
 
     setArrtemp(newclone);
   }
 
   function edit(index2) {
-    let newarrtemp = [];
+    let newarrtemp2 = [];
 
     arrtemp.map((obj, index) => {
       if (index2 == index) {
         // newarrtemp.push(obj);
-        setInput1(obj.input1)
-        setInput2(obj.input2)
+        setInput1(obj.input1);
+        setInput2(obj.input2);
+        setEditindex(index2);
+
+        // newarrtemp2.push(obj);
       }
     });
 
     setEditmode(true);
-
   }
-
 
   return (
     <>
