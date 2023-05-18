@@ -17,10 +17,46 @@ export default function Home() {
   const [inputG3, setinputG3] = useState("33");
   const [inputG4, setinputG4] = useState("444");
 
+  let arr = [
+    {
+        "id": 1,
+        "background": "yellow",
+        "marginTop": "11%",
+        "input1": "111",
+        "input2": "1111",
+        "isfix": true
+    },
+    {
+        "id": 2,
+        "background": "yellow",
+        "marginTop": "11%",
+        "input1": "222",
+        "input2": "2222",
+        "isfix": true
+    },
+    {
+        "id": 3,
+        "background": "yellow",
+        "marginTop": "11%",
+        "input1": "333",
+        "input2": "333",
+        "isfix": true
+    },
+    {
+        "id": 4,
+        "background": "yellow",
+        "marginTop": "11%",
+        "input1": "444",
+        "input2": "444",
+        "isfix": true
+    }
+]
+
   const [editmode, setEditmode] = useState(false);
   const [sortmode, setSortmode] = useState(true);
 
   const [arrtemp, setArrtemp] = useState([]);
+  const [arrpin, setPin] = useState([]);
 
   const [arrgreen, setArrgreen] = useState([]);
 
@@ -108,6 +144,20 @@ export default function Home() {
       }
   };
 
+  function loaddata(){
+    setArrtemp(arr)
+  }
+
+  useEffect(() => {
+    loaddata()
+  }, []);
+
+  // useEffect(() => {
+  //   if(arrtemp){
+  //     arr = arrtemp
+  //   }
+  // }, [arrtemp]);
+
   return (
     <>
       <Head>
@@ -185,6 +235,9 @@ export default function Home() {
                 setInput2={setInput2}
                 setEditmode={setEditmode}
                 setEditindex={setEditindex}
+                arrpin = {arrpin}
+                setPin = {setPin}
+                loaddata = {loaddata}
               />
             </Grid>
           </Grid>

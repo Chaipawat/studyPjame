@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Title from "../../components/Text/Title";
 import { Grid, Box, Button } from "@mui/material";
+import { pink } from "@mui/material/colors";
 
 function ShowYellow({ text, content, isfix }) {
   return (
@@ -18,10 +19,15 @@ function Yellow2({
   setInput2,
   setEditmode,
   setEditindex,
+  arrpin,
+  setPin,
+  loaddata,
 }) {
 
+  const [searchinput, setSearch] = useState("");
+
   useEffect(() => {
-    // console.log("arrtemp : ", arrtemp);
+    console.log("arrtemp : ", arrtemp);
   }, [arrtemp]);
 
   function deletearr(index2) {
@@ -85,8 +91,108 @@ function Yellow2({
     setEditmode(true);
   }
 
+  function top(index3) {
+    if (index3 > 0) {
+      let newclone = [...arrtemp];
+      let tempnow = arrtemp.find((obj, index) => index3 === index); //เช็คค่าตัวที่กด
+      let temppre = arrtemp.find((obj, index) => index3 - 1 === index); //เช็คค่าข้างบน
+
+      newclone[index3 - 1] = tempnow;
+      newclone[index3] = temppre;
+
+      setArrtemp(newclone);
+    }
+  }
+
+  function down(index3) {
+    if (index3 < arrtemp.length - 1) {
+      let newclone = [...arrtemp];
+      let tempnow = arrtemp.find((obj, index) => index3 === index); //เช็คค่าตัวที่กด
+      let tempnext = arrtemp.find((obj, index) => index3 + 1 === index); //เช็คค่าข้างบน
+
+      newclone[index3] = tempnext;
+      newclone[index3 + 1] = tempnow;
+
+      setArrtemp(newclone);
+    }
+  }
+
+  function pin(index3) {
+    let newpin = [...arrpin];
+    let newarrtemp = [];
+
+    arrtemp.map((obj, index) => {
+      if (index3 !== index) {
+        newarrtemp.push(obj);
+      } else {
+        newpin.push({ ...obj, indextemp: index3 });
+      }
+    });
+
+    setArrtemp(newarrtemp);
+
+    setPin(newpin);
+  }
+
+  function unpin(index3) {
+    let newarr = [...arrtemp];
+    let newpintemp = [];
+
+    arrpin.map((obj, index) => {
+      if (index3 !== index) {
+        newpintemp.push(obj);
+      } else {
+        newarr.splice(obj.indextemp, 0, obj);
+      }
+    });
+
+    setArrtemp(newarr);
+    setPin(newpintemp);
+  }
+
+  function search(inputsearch){
+
+    if(inputsearch){
+      let filterTemp = arrtemp.filter((obj) => obj.input1.includes(inputsearch));
+      setArrtemp(filterTemp);
+    }else{
+      loaddata()
+    }
+  }
+
   return (
     <>
+      <div>
+        <input
+          value={searchinput}
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+          type="text"
+          name="name"
+        />
+        <Button onClick={()=>search(searchinput)}> ค้นหา </Button>
+      </div>
+      <div style={{ color: "#000000" }}>ปักหมุด</div>
+      {arrpin.map((obj, index) => {
+        return (
+          <div style={{ background: obj.background, marginTop: obj.marginTop }}>
+            <Grid display={"flex"} justifyContent={"center"}>
+              {maparr(0, obj)}
+              {/* {obj.id == 1 ? maparr(0,obj) : maparr(1,obj)} */}
+            </Grid>
+            <Button onClick={() => deletearr(index)}> ลบ </Button>
+            <Button onClick={() => clone(index)}> คัดลอก </Button>
+            <Button onClick={() => edit(index)}> แก้ไข </Button>
+            <Button onClick={() => top(index)}> เลื่อนขึ้น </Button>
+            <Button onClick={() => down(index)}> เลื่อนลง </Button>
+            {/* <Button onClick={() => pin(index)}> ปักหมุด </Button> */}
+            <Button onClick={() => unpin(index)}> ยกเลิกปักหมุด </Button>
+          </div>
+        );
+      })}
+
+      <div style={{ color: "#000000" }}>ไม่ปักหมุด</div>
       {arrtemp.map((obj, index) => {
         return (
           <div style={{ background: obj.background, marginTop: obj.marginTop }}>
@@ -97,6 +203,9 @@ function Yellow2({
             <Button onClick={() => deletearr(index)}> ลบ </Button>
             <Button onClick={() => clone(index)}> คัดลอก </Button>
             <Button onClick={() => edit(index)}> แก้ไข </Button>
+            <Button onClick={() => top(index)}> เลื่อนขึ้น </Button>
+            <Button onClick={() => down(index)}> เลื่อนลง </Button>
+            <Button onClick={() => pin(index)}> ปักหมุด </Button>
           </div>
         );
       })}
