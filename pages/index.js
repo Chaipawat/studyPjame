@@ -6,157 +6,168 @@ import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import Green from "../containers/Green";
 import Yellow from "../containers/Yellow";
+import Select from 'react-select'
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const [input1, setInput1] = useState("");
-  const [input2, setInput2] = useState("");
+  const [inputYel1, setInputYel1] = useState("");
+  const [inputYel2, setInputYel2] = useState("");
+  const [inputA, setInputA] = useState("");
+  const [inputB, setInputB] = useState("");
+
   const [inputG1, setinputG1] = useState("11");
   const [inputG2, setinputG2] = useState("222");
   const [inputG3, setinputG3] = useState("33");
   const [inputG4, setinputG4] = useState("444");
 
-  let arr = [
+  let arrData = [
     {
-        "id": 1,
-        "background": "yellow",
-        "marginTop": "11%",
-        "input1": "111",
-        "input2": "1111",
-        "isfix": true
+      id: 1,
+      background: "yellow",
+      marginTop: "11%",
+      inputYel1: "111",
+      inputYel2: "1111",
+      isfix: true,
+      tag: "A"
     },
     {
-        "id": 2,
-        "background": "yellow",
-        "marginTop": "11%",
-        "input1": "222",
-        "input2": "2222",
-        "isfix": true
+      id: 2,
+      background: "yellow",
+      marginTop: "11%",
+      inputYel1: "222",
+      inputYel2: "2222",
+      isfix: true,
+      tag: "B"
     },
     {
-        "id": 3,
-        "background": "yellow",
-        "marginTop": "11%",
-        "input1": "333",
-        "input2": "333",
-        "isfix": true
+      id: 3,
+      background: "yellow",
+      marginTop: "11%",
+      inputYel1: "333",
+      inputYel2: "333",
+      isfix: true,
+      tag: "A"
     },
     {
-        "id": 4,
-        "background": "yellow",
-        "marginTop": "11%",
-        "input1": "444",
-        "input2": "444",
-        "isfix": true
-    }
-]
+      id: 4,
+      background: "yellow",
+      marginTop: "11%",
+      inputYel1: "444",
+      inputYel2: "444",
+      isfix: true,
+      tag: "B"
+    },
+  ];
 
-  const [editmode, setEditmode] = useState(false);
-  const [sortmode, setSortmode] = useState(true);
+  const [selectedOption, setSelectedOption] = useState(null);
 
-  const [arrtemp, setArrtemp] = useState([]);
-  const [arrpin, setPin] = useState([]);
+  const options = [
+    { value: '-', label: '-' },
+    { value: 'A', label: 'A' },
+    { value: 'B', label: 'B' }
+  ]
 
-  const [arrgreen, setArrgreen] = useState([]);
+  const [editMode, setEditmode] = useState(false);
+  const [sortMode, setSortmode] = useState(true);
 
-  const [editindex, setEditindex] = useState("");
+  const [arrTemp, setArrtemp] = useState([]);
+  const [arrPin, setPin] = useState([]);
+
+  const [arrGreen, setArrgreen] = useState([]);
+
+  const [editIndex, setEditindex] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     let newObject = null;
 
-    if (input1 !== "" && input2 !== "") {
+    if (inputYel1 !== "" && inputYel2 !== "") {
       newObject = {
-        id: arrtemp.length + 1,
+        id: arrTemp.length + 1,
         background: "yellow",
         marginTop: "11%",
-        input1: input1,
-        input2: input2,
+        inputYel1: inputYel1,
+        inputYel2: inputYel2,
         isfix: true,
+        tag:selectedOption.value,
       };
     }
     if (newObject) {
       setArrtemp((prevState) => [...prevState, newObject]);
     }
-    setInput1("");
-    setInput2("");
+    setInputYel1("");
+    setInputYel2("");
   };
 
   const handleEdit = (event) => {
     event.preventDefault();
 
-    let newclone = [...arrtemp]; //เก็บค่าเก่าไว้ก่อน
-    let temp = arrtemp.find((obj, index) => editindex === index); //เอา temp มาเพื่อหาตำแหน่งของค่าที่จะแก้ไข
+    let newclone = [...arrTemp]; //เก็บค่าเก่าไว้ก่อน
+    let temp = arrTemp.find((obj, index) => editIndex === index); //เอา temp มาเพื่อหาตำแหน่งของค่าที่จะแก้ไข
 
-    if (input1 !== "" && input2 !== "") {
-      temp.input1 = input1; //เปลี่ยนค่า
-      temp.input2 = input2; //เปลี่ยนค่า
+    if (inputYel1 !== "" && inputYel2 !== "") {
+      temp.inputYel1 = inputYel1; //เปลี่ยนค่า
+      temp.inputYel2 = inputYel2; //เปลี่ยนค่า
     }
 
-    newclone[editindex] = temp;
+    newclone[editIndex] = temp;
 
     setEditindex(null);
-    setInput1("");
-    setInput2("");
+    setInputYel1("");
+    setInputYel2("");
     setArrtemp(newclone);
     setEditmode(false);
   };
 
   useEffect(() => {
-    console.log("input :  ", input1, input2);
+    console.log("input :  ", inputYel1, inputYel2);
   }, []);
 
-  function sortAtoZ(e) {
-    let arrsort = [...arrtemp];
-    let compare = "";
+  function sort_AtoZ(bool) {
+    let arrSort = [...arrTemp];
+    let Compare = "";
 
     {
-      e == true
-        ? (compare = (a, b) =>
-            a.input1 < b.input1 ? -1 : a.input1 > b.input1 ? 1 : 0) //sort A to Z
-        : (compare = (a, b) =>
-            a.input1 > b.input1 ? -1 : a.input1 < b.input1 ? 1 : 0); //sort Z to A
+      bool == true
+        ? (Compare = (a, b) =>
+            a.inputYel1 < b.inputYel1 ? -1 : a.inputYel1 > b.inputYel1 ? 1 : 0) //sort A to Z
+        : (Compare = (a, b) =>
+            a.inputYel1 > b.inputYel1 ? -1 : a.inputYel1 < b.inputYel1 ? 1 : 0); //sort Z to A
     }
 
-    arrsort.sort(compare); //set arrsort ให้ทำงานตาม compare ด้านบน
-    setArrtemp(arrsort); // set ค่ากลับเข้า arr เดิม
+    arrSort.sort(Compare); //set arrsort ให้ทำงานตาม compare ด้านบน
+    setArrtemp(arrSort); // set ค่ากลับเข้า arr เดิม
 
     {
-      !sortmode ? setSortmode(true) : setSortmode(false);
+      !sortMode ? setSortmode(true) : setSortmode(false);
     }
   }
 
   const handleSubGreen = (event) => {
-      let newGreen = null
-      newGreen = {
-        id: arrtemp.length + 1,
-        background: "green",
-        marginTop: "5%",
-        title: inputG1,
-        content: inputG2,
-        head: inputG3,
-        body: inputG4,
-      }
-      if (newGreen) {
-        setArrgreen((prevState) => [...prevState, newGreen]);
-      }
+    let newGreen = null;
+    newGreen = {
+      id: arrTemp.length + 1,
+      background: "green",
+      marginTop: "5%",
+      title: inputG1,
+      content: inputG2,
+      head: inputG3,
+      body: inputG4,
+    };
+    if (newGreen) {
+      setArrgreen((prevState) => [...prevState, newGreen]);
+    }
   };
 
-  function loaddata(){
-    setArrtemp(arr)
+  function loadDataArr() {
+    setArrtemp(arrData);
   }
 
   useEffect(() => {
-    loaddata()
+    loadDataArr();
   }, []);
-
-  // useEffect(() => {
-  //   if(arrtemp){
-  //     arr = arrtemp
-  //   }
-  // }, [arrtemp]);
 
   return (
     <>
@@ -193,51 +204,54 @@ export default function Home() {
               {/* <Button onClick={() => sortAtoZ(sortmode)}>sort </Button> */}
             </form>
 
-            { /* ////////////////////////////// */}
+            {/* ////////////////////////////// */}
             <form
-              onSubmit={editmode ? handleEdit : handleSubmit}
+              onSubmit={editMode ? handleEdit : handleSubmit}
               style={{ border: "1px solid #000000", margin: 5 }}
             >
               <h3 style={{ color: "#000000" }}>Input yellow</h3>
               <input
-                value={input1}
+                value={inputYel1}
                 onChange={(e) => {
-                  setInput1(e.target.value);
+                  setInputYel1(e.target.value);
                 }}
                 type="text"
                 name="name"
               />
 
               <input
-                value={input2}
+                value={inputYel2}
                 onChange={(e) => {
-                  setInput2(e.target.value);
+                  setInputYel2(e.target.value);
                 }}
                 type="text"
                 name="name"
               />
-
-              <Button type="submit">{editmode ? "แก้ไข" : "กด"} </Button>
-              <Button onClick={() => sortAtoZ(sortmode)}>sort </Button>
+              <Select value={selectedOption} options={options} onChange={(v)=>setSelectedOption(v)} />
+              <Button type="submit">{editMode ? "แก้ไข" : "กด"} </Button>
+              <Button onClick={() => sort_AtoZ(sortMode)}>sort </Button>
             </form>
           </div>
 
           <div className={`${styles.background}`}></div>
           <Grid container spacing={2}>
             <Grid item md={7}>
-              <Green arrgreen={arrgreen} setArrgreen={setArrgreen} />
+              <Green arrGreen={arrGreen} setArrgreen={setArrgreen} />
             </Grid>
             <Grid item md={3}>
               <Yellow
-                arrtemp={arrtemp}
+                arrTemp={arrTemp}
                 setArrtemp={setArrtemp}
-                setInput1={setInput1}
-                setInput2={setInput2}
+                setInputYel1={setInputYel1}
+                setInputYel2={setInputYel2}
                 setEditmode={setEditmode}
                 setEditindex={setEditindex}
-                arrpin = {arrpin}
-                setPin = {setPin}
-                loaddata = {loaddata}
+                arrPin={arrPin}
+                setPin={setPin}
+                loadDataArr={loadDataArr}
+                options={options}
+                selectedOption={selectedOption}
+                setSelectedOption={setSelectedOption}
               />
             </Grid>
           </Grid>

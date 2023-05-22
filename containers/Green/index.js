@@ -10,7 +10,7 @@ function Showtitle({ text, content }) {
   );
 }
 
-function greenshow({ arrgreen, setArrgreen }) {
+function greenshow({ arrGreen, setArrgreen }) {
 
 
   // useEffect(() => {
@@ -19,7 +19,7 @@ function greenshow({ arrgreen, setArrgreen }) {
 
   return (
     <>
-      {arrgreen.map((obj, index) => {
+      {arrGreen.map((obj, index) => {
         return (
           <div style={{ background: obj.background, marginTop: obj.marginTop }}>
             {greenBox1(obj)}

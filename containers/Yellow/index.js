@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Title from "../../components/Text/Title";
 import { Grid, Box, Button } from "@mui/material";
 import { pink } from "@mui/material/colors";
+import Select from 'react-select'
 
 function ShowYellow({ text, content, isfix }) {
   return (
@@ -13,25 +14,28 @@ function ShowYellow({ text, content, isfix }) {
 
 function Yellow2({
   form,
-  arrtemp,
+  arrTemp,
   setArrtemp,
-  setInput1,
-  setInput2,
+  setInputYel1,
+  setInputYel2,
   setEditmode,
   setEditindex,
-  arrpin,
+  arrPin,
   setPin,
-  loaddata,
+  loadDataArr,
+  options,
+  selectedOption,
+  setSelectedOption
 }) {
 
-  const [searchinput, setSearch] = useState("");
+  const [searchInput, setSearch] = useState("");
 
   useEffect(() => {
-    console.log("arrtemp : ", arrtemp);
-  }, [arrtemp]);
+    console.log("arrTemp : ", arrTemp);
+  }, [arrTemp]);
 
   function deletearr(index2) {
-    let newarrtemp = [];
+    let newarrTemp = [];
 
     // for (let i = 0; i < arrtemp.length; i++) {
     //   console.log("arrtemp[i] : " ,i, arrtemp[i])
@@ -39,49 +43,49 @@ function Yellow2({
     //     newarrtemp.push(arrtemp[i]);
     //   }
     // }
-    arrtemp.map((obj, index) => {
+    arrTemp.map((obj, index) => {
       if (index2 !== index) {
-        newarrtemp.push(obj);
+        newarrTemp.push(obj);
       }
     });
 
     // setArrtemp(arrtemp.filter((obj,index) => index2 != index))
 
-    setArrtemp(newarrtemp);
-    arrtemp.map((obj, index) => {
+    setArrtemp(newarrTemp);
+    arrTemp.map((obj, index) => {
       console.log("obj ", index, obj);
     });
     // console.log("arrt : ", arrtemp);
   }
 
   function clone(index3) {
-    let newclone = [...arrtemp];
-    let temp = arrtemp.find((obj, index) => index3 === index); //find หา index เก็บลง temp
+    let newClone = [...arrTemp];
+    let temp = arrTemp.find((obj, index) => index3 === index); //find หา index เก็บลง temp
 
-    let filterTemp = arrtemp.filter((obj) => obj.input2.includes(temp.input2)); //incldes => หาคำที่อยู่ข้างใน หาว่ามี input 2 กี่ตัว มีมากกว่าหนึ่งตัว
+    let filterTemp = arrTemp.filter((obj) => obj.inputYel2.includes(temp.inputYel2)); //incldes => หาคำที่อยู่ข้างใน หาว่ามี input 2 กี่ตัว มีมากกว่าหนึ่งตัว
 
     if (filterTemp.length > 1) {
       //เช็คความยาวถ้ามีมากกว่า 1 เช่น {123,123-COPY} ให้ต่อ -COPY + จำนวนเข้าไป
-      newclone.push({
+      newClone.push({
         ...temp,
-        input2: temp.input2 + "-COPY" + filterTemp.length,
+        inputYel2: temp.inputYel2 + "-COPY" + filterTemp.length,
       });
     } else if (filterTemp.length == 1) {
       //ถ้ามีแค่ 1 {123} ให้ต่อแค่ -COPY
-      newclone.push({ ...temp, input2: temp.input2 + "-COPY" });
+      newClone.push({ ...temp, inputYel2: temp.inputYel2 + "-COPY" });
     }
 
-    setArrtemp(newclone);
+    setArrtemp(newClone);
   }
 
   function edit(index2) {
     let newarrtemp2 = [];
 
-    arrtemp.map((obj, index) => {
+    arrTemp.map((obj, index) => {
       if (index2 == index) {
         // newarrtemp.push(obj);
-        setInput1(obj.input1);
-        setInput2(obj.input2);
+        setInputYel1(obj.inputYel1);
+        setInputYel2(obj.inputYel2);
         setEditindex(index2);
 
         // newarrtemp2.push(obj);
@@ -93,9 +97,9 @@ function Yellow2({
 
   function top(index3) {
     if (index3 > 0) {
-      let newclone = [...arrtemp];
-      let tempnow = arrtemp.find((obj, index) => index3 === index); //เช็คค่าตัวที่กด
-      let temppre = arrtemp.find((obj, index) => index3 - 1 === index); //เช็คค่าข้างบน
+      let newclone = [...arrTemp];
+      let tempnow = arrTemp.find((obj, index) => index3 === index); //เช็คค่าตัวที่กด
+      let temppre = arrTemp.find((obj, index) => index3 - 1 === index); //เช็คค่าข้างบน
 
       newclone[index3 - 1] = tempnow;
       newclone[index3] = temppre;
@@ -105,10 +109,10 @@ function Yellow2({
   }
 
   function down(index3) {
-    if (index3 < arrtemp.length - 1) {
-      let newclone = [...arrtemp];
-      let tempnow = arrtemp.find((obj, index) => index3 === index); //เช็คค่าตัวที่กด
-      let tempnext = arrtemp.find((obj, index) => index3 + 1 === index); //เช็คค่าข้างบน
+    if (index3 < arrTemp.length - 1) {
+      let newclone = [...arrTemp];
+      let tempnow = arrTemp.find((obj, index) => index3 === index); //เช็คค่าตัวที่กด
+      let tempnext = arrTemp.find((obj, index) => index3 + 1 === index); //เช็คค่าข้างบน
 
       newclone[index3] = tempnext;
       newclone[index3 + 1] = tempnow;
@@ -118,10 +122,10 @@ function Yellow2({
   }
 
   function pin(index3) {
-    let newpin = [...arrpin];
+    let newpin = [...arrPin];
     let newarrtemp = [];
 
-    arrtemp.map((obj, index) => {
+    arrTemp.map((obj, index) => {
       if (index3 !== index) {
         newarrtemp.push(obj);
       } else {
@@ -135,10 +139,10 @@ function Yellow2({
   }
 
   function unpin(index3) {
-    let newarr = [...arrtemp];
+    let newarr = [...arrTemp];
     let newpintemp = [];
 
-    arrpin.map((obj, index) => {
+    arrPin.map((obj, index) => {
       if (index3 !== index) {
         newpintemp.push(obj);
       } else {
@@ -150,31 +154,45 @@ function Yellow2({
     setPin(newpintemp);
   }
 
-  function search(inputsearch){
+  function search(inputSearch){
 
-    if(inputsearch){
-      let filterTemp = arrtemp.filter((obj) => obj.input1.includes(inputsearch));
+    if(inputSearch){
+      let filterTemp = arrTemp.filter((obj) => obj.inputYel1.includes(inputSearch));
       setArrtemp(filterTemp);
     }else{
-      loaddata()
+      loadDataArr()
     }
   }
+
+  useEffect(()=>{
+    if(selectedOption){
+      if(selectedOption.value == "-"){
+        console.log("pass -")
+        loadDataArr()
+      }else{
+        let filterTemp = arrTemp.filter((obj) => obj.tag.includes(selectedOption.value));
+        setArrtemp(filterTemp);
+      }
+    }
+
+  },[selectedOption])
 
   return (
     <>
       <div>
         <input
-          value={searchinput}
+          value={searchInput}
           onChange={(e) => {
             setSearch(e.target.value);
           }}
           type="text"
           name="name"
         />
-        <Button onClick={()=>search(searchinput)}> ค้นหา </Button>
+        <Button onClick={()=>search(searchInput)}> ค้นหา </Button>
+        <Select value={selectedOption} options={options} onChange={(v)=>setSelectedOption(v)} />
       </div>
       <div style={{ color: "#000000" }}>ปักหมุด</div>
-      {arrpin.map((obj, index) => {
+      {arrPin.map((obj, index) => {
         return (
           <div style={{ background: obj.background, marginTop: obj.marginTop }}>
             <Grid display={"flex"} justifyContent={"center"}>
@@ -193,7 +211,7 @@ function Yellow2({
       })}
 
       <div style={{ color: "#000000" }}>ไม่ปักหมุด</div>
-      {arrtemp.map((obj, index) => {
+      {arrTemp.map((obj, index) => {
         return (
           <div style={{ background: obj.background, marginTop: obj.marginTop }}>
             <Grid display={"flex"} justifyContent={"center"}>
@@ -253,8 +271,8 @@ function maparr(i, object) {
   return (
     <Box item md={6}>
       <ShowYellow
-        text={object.input1}
-        content={object.input2}
+        text={object.inputYel1}
+        content={object.inputYel2}
         isfix={object.isfix}
       />
     </Box>
