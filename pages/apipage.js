@@ -10,15 +10,16 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import Paper from '@mui/material/Paper';
 import { Link } from "react-router-dom";
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const inter = Inter({ subsets: ["latin"] });
-
 
 export default function newpage() {
   const [dataRick, setDataRick] = useState([]);
@@ -27,30 +28,23 @@ export default function newpage() {
   const [dataRes, setDataRes] = useState([]);
   const [dataInfo, setDataInfo] = useState([]);
 
+  const [dataorigin, setDataorigin] = useState([]);
+  const [getoringin, setGetOringin] = useState([]);
+
   const [open, setOpen] = useState(false);
+  const [checkbutton, setCheckbutton] = useState(false);
+  const [checkindex, setcheckindex] = useState("");
+
+  const [open2, setOpen2] = useState(false);
+  const [checkbutton2, setCheckbutton2] = useState(false);
+  const [checkindex2, setcheckindex2] = useState("");
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  function setPath(pathlink) {
-    setPathapi(pathlink)
-    setOpen(true);
-    console.log("path : ", pathApi)
-  }
-
-  const getInfo = async () => {
-    try {
-      const response = await axios.get(
-        pathApi
-      );
-      console.log(response.data);
-      setDataInfo(response.data);
-      setDataRes(response.data.residents)
-      //   return response.data;
-    } catch (error) {
-      console.error(error);
-    }
+  const handleClose2 = () => {
+    setOpen2(false);
   };
 
   const getapi = async () => {
@@ -58,7 +52,6 @@ export default function newpage() {
       const response = await axios.get(
         "https://rickandmortyapi.com/api/character"
       );
-      console.log(response.data.results);
       setDataRick(response.data.results);
       //   return response.data;
     } catch (error) {
@@ -66,15 +59,88 @@ export default function newpage() {
     }
   };
 
+  const getInfo = async (path) => {
+    try {
+      const response = await axios.get(path);
+      setDataInfo(response.data);
+      console.log("responseinfo",response.data.residents.length)
+      // var temp = [];
+      for (let i = 0; i < response.data.residents.length; i++) {
+        let pathrest = response.data.residents[i];
+        console.log("pathrest : ",pathrest)
+        await residentinfo(pathrest);
+        // temp.push(pathrest);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const residentinfo = async (path) => {
+    try {
+      const response = await axios.get(path);
+      let arrrest = [...dataRes];
+      arrrest.push(response.data);
+      setDataRes(arrrest);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getorigin = async (path) => {
+    try {
+      const response = await axios.get(path);
+      console.log("getorigin : ", response.data.residents);
+
+      setGetOringin(response.data);
+
+ 
+      for (let i = 0; i < response.data.residents.length; i++) {
+        let pathrest = response.data.residents[i];
+        origininfo(pathrest);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const origininfo = async (path) => {
+    try {
+      const response = await axios.get(path);
+      // console.log("origininfo : ", response.data);
+      let arrrest = [...dataorigin];
+      arrrest.push(response.data);
+      setDataorigin(arrrest);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  async function handleclick(path, index) {
+    setDataRes([])
+    setcheckindex(index);
+    setCheckbutton(true);
+    await getInfo(path);
+    setTimeout(() => {
+      setOpen(true);
+      setCheckbutton(false);
+    }, 1100);
+  }
+
+  async function handleOrigin(path, index) {
+    setDataorigin([])
+    setcheckindex2(index);
+    setCheckbutton2(true);
+    await getorigin(path);
+    setTimeout(() => {
+      setOpen2(true);
+      setCheckbutton2(false);
+    }, 1100);
+  }
+
   useEffect(() => {
     getapi();
   }, []);
-
-  useEffect(() => {
-    getInfo();
-  }, [pathApi]);
-
-
 
   return (
     <>
@@ -85,25 +151,57 @@ export default function newpage() {
         <main className={`${styles.main} ${inter.className}`}>
           <h1>Api Table</h1>
           <div>
-            <TableContainer >
+            <TableContainer>
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center"><h3>Name</h3></TableCell>
-                    <TableCell align="center"><h3>Episode</h3></TableCell>
-                    <TableCell align="center"><h3>Locations</h3></TableCell>
+                    <TableCell align="center">
+                      <h3>Name</h3>
+                    </TableCell>
+                    <TableCell align="center">
+                      <h3>origin</h3>
+                    </TableCell>
+                    <TableCell align="center">
+                      <h3>Locations</h3>
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {dataRick.map((row) => (
+                  {dataRick.map((row, idx) => (
                     <TableRow
                       key={row.name}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
-                      <TableCell component="th" scope="row" align="left">{row.name}</TableCell>
-                      <TableCell align="center">{row.origin.name}</TableCell>
+                      <TableCell component="th" scope="row" align="left">
+                        {row.name}
+                      </TableCell>
                       <TableCell align="center">
-                        <Button style={{color:"#000000" }} onClick={() => { setPath(row.location.url) }} >{row.location.name}</Button>
+                        <Button
+                          style={{ color: "#000000", minWidth: "100px" }}
+                          onClick={() => {
+                            handleOrigin(row.origin.url, idx);
+                          }}
+                        >
+                          {checkbutton2 && checkindex2 == idx ? (
+                            <CircularProgress size={"24px"} />
+                          ) : (
+                            row.origin.name
+                          )}
+                        </Button>
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button
+                          style={{ color: "#000000", minWidth: "100px" }}
+                          onClick={() => {
+                            handleclick(row.location.url, idx);
+                          }}
+                        >
+                          {checkbutton && checkindex == idx ? (
+                            <CircularProgress size={"24px"} />
+                          ) : (
+                            row.location.name
+                          )}
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -118,36 +216,161 @@ export default function newpage() {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <DialogTitle id="alert-dialog-title">
-              {"Page Info"}
-            </DialogTitle>
+            <DialogTitle id="alert-dialog-title">{"Location Info"}</DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                <div> location name : {dataInfo.name} </div>
-                <hr style={{marginTop:10, marginBottom: 10 }}/>
-                <div> type : {dataInfo.type} </div>
-                <hr  style={{marginTop:10, marginBottom: 10 }}/>
-                <div> dimension : {dataInfo.dimension} </div>
-                <hr style={{marginTop:10, marginBottom: 10 }}/>
-                <div>
-                  <TableContainer >
+                Location name : {dataInfo.name} 
+                {/* <hr style={{ marginTop: 10, marginBottom: 10 }} /> */}
+                 Type : {dataInfo.type} 
+                {/* <hr style={{ marginTop: 10, marginBottom: 10 }} /> */}
+                 Dimension : {dataInfo.dimension} 
+                {/* <hr style={{ marginTop: 10, marginBottom: 10 }} /> */}
+                
+                  <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
-                          <TableCell align="left"><h3>residents</h3></TableCell>
+                          <TableCell component="th" scope="row" align="left">
+                           name
+                          </TableCell>
+                          <TableCell component="th" scope="row" align="left">
+                            status
+                          </TableCell>
+                          <TableCell component="th" scope="row" align="left">
+                            species
+                          </TableCell>
+                          <TableCell component="th" scope="row" align="left">
+                            type
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {dataRes && dataRes.map((row, index) => (
-                          <TableRow
-                            key={index} // Use index as the key since row.id doesn't seem to be available
-                            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                          >
-                            <TableCell component="th" scope="row" align="left">
-                              {row}
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                        {dataRes &&
+                          dataRes.map((row, index) => (
+                            <TableRow
+                              key={index} // Use index as the key since row.id doesn't seem to be available
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}
+                            >
+                              <TableCell
+                                component="td"
+                                scope="row"
+                                align="left"
+                              >
+                                {row.name}
+                              </TableCell>
+                              <TableCell
+                                component="td"
+                                scope="row"
+                                align="left"
+                              >
+                                {row.status}
+                              </TableCell>
+                              <TableCell
+                                component="td"
+                                scope="row"
+                                align="left"
+                              >
+                                {row.species}
+                              </TableCell>
+                              <TableCell
+                                component="td"
+                                scope="row"
+                                align="left"
+                              >
+                                {row.type}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>ปิด</Button>
+            </DialogActions>
+          </Dialog>
+
+          <Dialog
+            open={open2}
+            onClose={handleClose2}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">{"Origin"}</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                <div> Origin name : {getoringin.name} </div>
+                <hr style={{ marginTop: 10, marginBottom: 10 }} />
+                <div> Type : {getoringin.type} </div>
+                <hr style={{ marginTop: 10, marginBottom: 10 }} />
+                <div> Dimension : {getoringin.dimension} </div>
+                <hr style={{ marginTop: 10, marginBottom: 10 }} />
+                <div>
+                  <TableContainer>
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell component="th" scope="row" align="left">
+                            <h3>name</h3>
+                          </TableCell>
+                          <TableCell component="th" scope="row" align="left">
+                            <h3>status</h3>
+                          </TableCell>
+                          <TableCell component="th" scope="row" align="left">
+                            <h3>species</h3>
+                          </TableCell>
+                          <TableCell component="th" scope="row" align="left">
+                            <h3>type</h3>
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {dataorigin &&
+                          dataorigin.map((row, index) => (
+                            <TableRow
+                              key={index} // Use index as the key since row.id doesn't seem to be available
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}
+                            >
+                              <TableCell
+                                component="td"
+                                scope="row"
+                                align="left"
+                              >
+                                {row.name}
+                              </TableCell>
+                              <TableCell
+                                component="td"
+                                scope="row"
+                                align="left"
+                              >
+                                {row.status}
+                              </TableCell>
+                              <TableCell
+                                component="td"
+                                scope="row"
+                                align="left"
+                              >
+                                {row.species}
+                              </TableCell>
+                              <TableCell
+                                component="td"
+                                scope="row"
+                                align="left"
+                              >
+                                {row.type ? row.type : "-"}
+                              </TableCell>
+                            </TableRow>
+                          ))}
                       </TableBody>
                     </Table>
                   </TableContainer>
@@ -155,7 +378,7 @@ export default function newpage() {
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleClose}>ปิด</Button>
+              <Button onClick={handleClose2}>ปิด</Button>
             </DialogActions>
           </Dialog>
         </main>
