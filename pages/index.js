@@ -231,6 +231,10 @@ export default function Home() {
               <Button type="submit">{editMode ? "แก้ไข" : "กด"} </Button>
               <Button onClick={() => sort_AtoZ(sortMode)}>sort </Button>
             </form>
+
+            <Grid>
+              <Button onClick={() => { window.location.href = 'apipage'; }}> go to apipage</Button>
+            </Grid>
           </div>
 
           <div className={`${styles.background}`}></div>
@@ -255,6 +259,8 @@ export default function Home() {
               />
             </Grid>
           </Grid>
+
+          
         </main>
       </div>
     </>
