@@ -103,7 +103,7 @@ export default function newpage() {
                       <TableCell component="th" scope="row" align="left">{row.name}</TableCell>
                       <TableCell align="center">{row.origin.name}</TableCell>
                       <TableCell align="center">
-                        <div onClick={() => { setPath(row.location.url) }} >{row.location.name}</div>
+                        <Button style={{color:"#000000" }} onClick={() => { setPath(row.location.url) }} >{row.location.name}</Button>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -123,30 +123,35 @@ export default function newpage() {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-          <div style={{marginTop:10,marginBottom:10}}> location name : {dataInfo.name}  |  type : {dataInfo.type} | dimension : {dataInfo.dimension} </div>
-          <div>
-            <TableContainer >
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="center"><h3>residents</h3></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                {dataRes && dataRes.map((row, index) => (
-                <TableRow
-                  key={index} // Use index as the key since row.id doesn't seem to be available
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row" align="center">
-                    {row}
-                  </TableCell>
-                </TableRow>
-              ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </div>
+                <div> location name : {dataInfo.name} </div>
+                <hr style={{marginTop:10, marginBottom: 10 }}/>
+                <div> type : {dataInfo.type} </div>
+                <hr  style={{marginTop:10, marginBottom: 10 }}/>
+                <div> dimension : {dataInfo.dimension} </div>
+                <hr style={{marginTop:10, marginBottom: 10 }}/>
+                <div>
+                  <TableContainer >
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell align="left"><h3>residents</h3></TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {dataRes && dataRes.map((row, index) => (
+                          <TableRow
+                            key={index} // Use index as the key since row.id doesn't seem to be available
+                            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                          >
+                            <TableCell component="th" scope="row" align="left">
+                              {row}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </div>
               </DialogContentText>
             </DialogContent>
             <DialogActions>
