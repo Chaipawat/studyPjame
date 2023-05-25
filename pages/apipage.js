@@ -64,13 +64,14 @@ export default function newpage() {
       const response = await axios.get(path);
       setDataInfo(response.data);
       console.log("responseinfo", response.data.residents.length)
-      // var temp = [];
+      var temp = [];
       for (let i = 0; i < response.data.residents.length; i++) {
         let pathrest = response.data.residents[i];
-        // console.log("pathrest : ",pathrest)
         await residentinfo(pathrest);
         // temp.push(pathrest);
       }
+
+      // setDataRes(temp)
     } catch (error) {
       console.error(error);
     }
@@ -79,9 +80,11 @@ export default function newpage() {
   const residentinfo = async (path) => {
     try {
       const response = await axios.get(path);
-      let arrrest = [...dataRes];
-      arrrest.push(response.data);
-      setDataRes(arrrest);
+      // let arrrest = [...dataRes];
+      // arrrest.push(response.data);
+      // console.log(error);
+      // setDataRes(arrrest);
+      setDataRes(prevDataRes => [...prevDataRes, response.data]);
     } catch (error) {
       console.error(error);
     }
@@ -108,16 +111,16 @@ export default function newpage() {
     try {
       const response = await axios.get(path);
       // console.log("origininfo : ", response.data);
-      let arrrest = [...dataorigin];
-      arrrest.push(response.data);
-      setDataorigin(arrrest);
+      // let arrrest = [...dataorigin];
+      // arrrest.push(response.data);
+      // setDataorigin(arrrest);
+      setDataorigin(prevDataRes => [...prevDataRes, response.data]);
     } catch (error) {
       console.error(error);
     }
   };
 
   async function handleclick(path, index) {
-    setDataRes([])
     setcheckindex(index);
     setCheckbutton(true);
     await getInfo(path);
@@ -128,7 +131,6 @@ export default function newpage() {
   }
 
   async function handleOrigin(path, index) {
-    setDataorigin([])
     setcheckindex2(index);
     setCheckbutton2(true);
     await getorigin(path);
@@ -213,6 +215,7 @@ export default function newpage() {
           <Dialog
             open={open}
             onClose={handleClose}
+            maxWidth={"ml"}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
@@ -220,23 +223,28 @@ export default function newpage() {
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
                 Location name: {dataInfo.name}
-                {/* <hr style={{ marginTop: 10, marginBottom: 10 }} /> */}
-                Type: {dataInfo.type}
-                {/* <hr style={{ marginTop: 10, marginBottom: 10 }} /> */}
-                Dimension: {dataInfo.dimension}
-                {/* <hr style={{ marginTop: 10, marginBottom: 10 }} /> */}
               </DialogContentText>
+              <DialogContentText id="alert-dialog-description">
+                Type: {dataInfo.type}
+              </DialogContentText>
+              <DialogContentText id="alert-dialog-description">
+                Dimension: {dataInfo.dimension}
+              </DialogContentText>
+                <hr style={{ marginTop: 10, marginBottom: 10 }} />
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
                     <TableCell component="th" scope="row" align="left">
+                      id
+                    </TableCell>
+                    <TableCell component="th" scope="row" align="left">
                       name
                     </TableCell>
                     <TableCell component="th" scope="row" align="left">
-                      status
+                    status
                     </TableCell>
                     <TableCell component="th" scope="row" align="left">
-                      species
+                    species
                     </TableCell>
                     <TableCell component="th" scope="row" align="left">
                       type
@@ -254,6 +262,9 @@ export default function newpage() {
                           },
                         }}
                       >
+                         <TableCell component="td" scope="row" align="left">
+                          {row.id}
+                        </TableCell>
                         <TableCell component="td" scope="row" align="left">
                           {row.name}
                         </TableCell>
@@ -264,7 +275,7 @@ export default function newpage() {
                           {row.species}
                         </TableCell>
                         <TableCell component="td" scope="row" align="left">
-                          {row.type}
+                          {row.type ? row.type : "-"}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -279,20 +290,29 @@ export default function newpage() {
           <Dialog
             open={open2}
             onClose={handleClose2}
+            maxWidth={"ml"}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
             <DialogTitle id="alert-dialog-title">{"Origin"}</DialogTitle>
             <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                 Origin name : {getoringin.name}      
-                Type : {getoringin.type} 
-                Dimension : {getoringin.dimension} 
+            <DialogContentText id="alert-dialog-description">
+                Origin name: {getoringin.name}
               </DialogContentText>
+              <DialogContentText id="alert-dialog-description">
+                Type: {getoringin.type}
+              </DialogContentText>
+              <DialogContentText id="alert-dialog-description">
+                Dimension: {getoringin.dimension}
+              </DialogContentText>
+                <hr style={{ marginTop: 10, marginBottom: 10 }} />
                 <TableContainer>
                   <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                       <TableRow>
+                      <TableCell component="th" scope="row" align="left">
+                          <h3>id</h3>
+                        </TableCell>
                         <TableCell component="th" scope="row" align="left">
                           <h3>name</h3>
                         </TableCell>
@@ -318,6 +338,13 @@ export default function newpage() {
                               },
                             }}
                           >
+                             <TableCell
+                              component="td"
+                              scope="row"
+                              align="left"
+                            >
+                              {row.id}
+                            </TableCell>
                             <TableCell
                               component="td"
                               scope="row"
