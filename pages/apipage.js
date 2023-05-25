@@ -63,11 +63,11 @@ export default function newpage() {
     try {
       const response = await axios.get(path);
       setDataInfo(response.data);
-      console.log("responseinfo",response.data.residents.length)
+      console.log("responseinfo", response.data.residents.length)
       // var temp = [];
       for (let i = 0; i < response.data.residents.length; i++) {
         let pathrest = response.data.residents[i];
-        console.log("pathrest : ",pathrest)
+        // console.log("pathrest : ",pathrest)
         await residentinfo(pathrest);
         // temp.push(pathrest);
       }
@@ -94,7 +94,7 @@ export default function newpage() {
 
       setGetOringin(response.data);
 
- 
+
       for (let i = 0; i < response.data.residents.length; i++) {
         let pathrest = response.data.residents[i];
         origininfo(pathrest);
@@ -219,77 +219,57 @@ export default function newpage() {
             <DialogTitle id="alert-dialog-title">{"Location Info"}</DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Location name : {dataInfo.name} 
+                Location name: {dataInfo.name}
                 {/* <hr style={{ marginTop: 10, marginBottom: 10 }} /> */}
-                 Type : {dataInfo.type} 
+                Type: {dataInfo.type}
                 {/* <hr style={{ marginTop: 10, marginBottom: 10 }} /> */}
-                 Dimension : {dataInfo.dimension} 
+                Dimension: {dataInfo.dimension}
                 {/* <hr style={{ marginTop: 10, marginBottom: 10 }} /> */}
-                
-                  <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell component="th" scope="row" align="left">
-                           name
-                          </TableCell>
-                          <TableCell component="th" scope="row" align="left">
-                            status
-                          </TableCell>
-                          <TableCell component="th" scope="row" align="left">
-                            species
-                          </TableCell>
-                          <TableCell component="th" scope="row" align="left">
-                            type
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {dataRes &&
-                          dataRes.map((row, index) => (
-                            <TableRow
-                              key={index} // Use index as the key since row.id doesn't seem to be available
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  border: 0,
-                                },
-                              }}
-                            >
-                              <TableCell
-                                component="td"
-                                scope="row"
-                                align="left"
-                              >
-                                {row.name}
-                              </TableCell>
-                              <TableCell
-                                component="td"
-                                scope="row"
-                                align="left"
-                              >
-                                {row.status}
-                              </TableCell>
-                              <TableCell
-                                component="td"
-                                scope="row"
-                                align="left"
-                              >
-                                {row.species}
-                              </TableCell>
-                              <TableCell
-                                component="td"
-                                scope="row"
-                                align="left"
-                              >
-                                {row.type}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                
               </DialogContentText>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell component="th" scope="row" align="left">
+                      name
+                    </TableCell>
+                    <TableCell component="th" scope="row" align="left">
+                      status
+                    </TableCell>
+                    <TableCell component="th" scope="row" align="left">
+                      species
+                    </TableCell>
+                    <TableCell component="th" scope="row" align="left">
+                      type
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {dataRes &&
+                    dataRes.map((row, index) => (
+                      <TableRow
+                        key={index} // Use index as the key since row.id doesn't seem to be available
+                        sx={{
+                          "&:last-child td, &:last-child th": {
+                            border: 0,
+                          },
+                        }}
+                      >
+                        <TableCell component="td" scope="row" align="left">
+                          {row.name}
+                        </TableCell>
+                        <TableCell component="td" scope="row" align="left">
+                          {row.status}
+                        </TableCell>
+                        <TableCell component="td" scope="row" align="left">
+                          {row.species}
+                        </TableCell>
+                        <TableCell component="td" scope="row" align="left">
+                          {row.type}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>ปิด</Button>
@@ -305,77 +285,72 @@ export default function newpage() {
             <DialogTitle id="alert-dialog-title">{"Origin"}</DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                <div> Origin name : {getoringin.name} </div>
-                <hr style={{ marginTop: 10, marginBottom: 10 }} />
-                <div> Type : {getoringin.type} </div>
-                <hr style={{ marginTop: 10, marginBottom: 10 }} />
-                <div> Dimension : {getoringin.dimension} </div>
-                <hr style={{ marginTop: 10, marginBottom: 10 }} />
-                <div>
-                  <TableContainer>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell component="th" scope="row" align="left">
-                            <h3>name</h3>
-                          </TableCell>
-                          <TableCell component="th" scope="row" align="left">
-                            <h3>status</h3>
-                          </TableCell>
-                          <TableCell component="th" scope="row" align="left">
-                            <h3>species</h3>
-                          </TableCell>
-                          <TableCell component="th" scope="row" align="left">
-                            <h3>type</h3>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {dataorigin &&
-                          dataorigin.map((row, index) => (
-                            <TableRow
-                              key={index} // Use index as the key since row.id doesn't seem to be available
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  border: 0,
-                                },
-                              }}
-                            >
-                              <TableCell
-                                component="td"
-                                scope="row"
-                                align="left"
-                              >
-                                {row.name}
-                              </TableCell>
-                              <TableCell
-                                component="td"
-                                scope="row"
-                                align="left"
-                              >
-                                {row.status}
-                              </TableCell>
-                              <TableCell
-                                component="td"
-                                scope="row"
-                                align="left"
-                              >
-                                {row.species}
-                              </TableCell>
-                              <TableCell
-                                component="td"
-                                scope="row"
-                                align="left"
-                              >
-                                {row.type ? row.type : "-"}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </div>
+                 Origin name : {getoringin.name}      
+                Type : {getoringin.type} 
+                Dimension : {getoringin.dimension} 
               </DialogContentText>
+                <TableContainer>
+                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell component="th" scope="row" align="left">
+                          <h3>name</h3>
+                        </TableCell>
+                        <TableCell component="th" scope="row" align="left">
+                          <h3>status</h3>
+                        </TableCell>
+                        <TableCell component="th" scope="row" align="left">
+                          <h3>species</h3>
+                        </TableCell>
+                        <TableCell component="th" scope="row" align="left">
+                          <h3>type</h3>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {dataorigin &&
+                        dataorigin.map((row, index) => (
+                          <TableRow
+                            key={index} // Use index as the key since row.id doesn't seem to be available
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                border: 0,
+                              },
+                            }}
+                          >
+                            <TableCell
+                              component="td"
+                              scope="row"
+                              align="left"
+                            >
+                              {row.name}
+                            </TableCell>
+                            <TableCell
+                              component="td"
+                              scope="row"
+                              align="left"
+                            >
+                              {row.status}
+                            </TableCell>
+                            <TableCell
+                              component="td"
+                              scope="row"
+                              align="left"
+                            >
+                              {row.species}
+                            </TableCell>
+                            <TableCell
+                              component="td"
+                              scope="row"
+                              align="left"
+                            >
+                              {row.type ? row.type : "-"}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose2}>ปิด</Button>
