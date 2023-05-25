@@ -39,6 +39,15 @@ export default function newpage() {
   const [checkbutton2, setCheckbutton2] = useState(false);
   const [checkindex2, setcheckindex2] = useState("");
 
+  const[nextPage, setNextpage] = useState("");
+  const[prevPage, setPrevPage] = useState("");
+
+  const[currentPage, setCurrentPage] = useState(1);
+
+  const[pagination, setPagination] = useState([1,2,3,4,5,6,7,8,9,10]);
+  const[pageCount, setpageCount] = useState();
+  // let pagination = [1,2,3,4,5,6,7,8,9,10]
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -53,11 +62,141 @@ export default function newpage() {
         "https://rickandmortyapi.com/api/character"
       );
       setDataRick(response.data.results);
+      setNextpage(response.data.info.next)
+      setPrevPage(response.data.info.prev)
+      setpageCount(response.data.info.pages)
+      setCurrentPage(1)
+      console.log(response.data.info)
       //   return response.data;
     } catch (error) {
       console.error(error);
     }
   };
+
+  async function loadnextpage(){
+    try {
+      const response = await axios.get(
+        nextPage
+      );
+      setDataRick(response.data.results);
+      setNextpage(response.data.info.next)
+      setPrevPage(response.data.info.prev)
+      if(currentPage%10 == 0){
+        let temp = [...pagination]
+        setPagination(temp.map(t=>t+10).filter(t=>t<=pageCount))
+      }
+      setCurrentPage(prevDataRes => prevDataRes+1)
+      console.log("-----next-----------")
+      console.log("loadnext ",response.data.info.next)
+      console.log("loadprev ",response.data.info.prev)
+    } catch (error) {
+      console.error(error);
+    }
+
+  }
+
+  async function loadprevpage(){
+    try {
+      if(prevPage !== null){
+      const response = await axios.get(
+        prevPage
+      );
+      setDataRick(response.data.results);
+      setNextpage(response.data.info.next)
+      setPrevPage(response.data.info.prev)
+
+      if(currentPage%10 == 1){
+        let temp = [...pagination]
+        let getprev = getPreviousPages(temp,currentPage)
+        setPagination(getprev)
+      }
+      setCurrentPage(prevDataRes => prevDataRes-1)
+      console.log("-----prev-----------")
+      console.log("loadnext ",response.data.info.next)
+      console.log("loadprev ",response.data.info.prev)
+    }
+    } catch (error) {
+      console.error(error);
+    }
+
+  }
+
+  function getPreviousPages(pages, currentPage) {
+    const numberOfPages = 10; // Number of pages to show before the current page
+  
+    const startIndex = currentPage - numberOfPages;
+    const endIndex = currentPage - 1;
+  
+    const previousPages = [];
+    for (let i = startIndex; i <= endIndex; i++) {
+      if (i >= 1) {
+        previousPages.push(i);
+      }
+    }
+  
+    return previousPages;
+  }
+
+  async function gotoPage (number){
+    try {
+      if(number !== null){
+      const response = await axios.get(
+        "https://rickandmortyapi.com/api/character?page=" + number
+      );
+      setDataRick(response.data.results);
+      setNextpage(response.data.info.next)
+      setPrevPage(response.data.info.prev)
+      setCurrentPage(number)
+      console.log("-----prev-----------")
+      console.log("loadnext ",response.data.info.next)
+      console.log("loadprev ",response.data.info.prev)
+    }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
+  async function gotolast (){
+    try {
+      const response = await axios.get(
+        "https://rickandmortyapi.com/api/character?page=" + pageCount
+      );
+      setDataRick(response.data.results);
+      setNextpage(response.data.info.next)
+      setPrevPage(response.data.info.prev)
+      let temp = [...pagination].map(t=>t-10)
+      let findNum = findNumbersInRange(pageCount, temp)
+      setPagination(findNum)
+      setCurrentPage(pageCount)
+      console.log("-----prev-----------")
+      console.log("loadnext ",response.data.info.next)
+      console.log("loadprev ",response.data.info.prev)
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  function findNumbersInRange(lastPage, range) {
+    const numbers = [];
+    let before = lastPage - 1;
+    let after = lastPage + 1;
+  
+    while (before % 10 !== 1 && before >= range[0]) {
+      before--;
+    }
+  
+    while (after % 10 !== 0 && after <= range[1]) {
+      after++;
+    }
+  
+    for (let i = before; i <= lastPage; i++) {
+      if (i >= range[0] && i <= lastPage) {
+        numbers.push(i);
+      }
+    }
+  
+    return numbers;
+  }
 
   const getInfo = async (path) => {
     try {
@@ -157,6 +296,9 @@ export default function newpage() {
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
+                  <TableCell align="center">
+                      <h3>id</h3>
+                    </TableCell>
                     <TableCell align="center">
                       <h3>Name</h3>
                     </TableCell>
@@ -171,9 +313,12 @@ export default function newpage() {
                 <TableBody>
                   {dataRick.map((row, idx) => (
                     <TableRow
-                      key={row.name}
+                      key={row.id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
+                       <TableCell component="th" scope="row" align="left">
+                        {row.id}
+                      </TableCell>
                       <TableCell component="th" scope="row" align="left">
                         {row.name}
                       </TableCell>
@@ -208,7 +353,18 @@ export default function newpage() {
                     </TableRow>
                   ))}
                 </TableBody>
+                
               </Table>
+              <Button style={{ right:0 }} onClick={()=>{gotoPage(1)}}> first </Button>
+              <Button style={{ right:0 }} onClick={()=>{loadprevpage()}} disabled={currentPage==1}> prev </Button>
+              {pagination.map((row, idx) => (
+                
+                <Button key={`paginate_${idx}`} variant={row == currentPage ?"contained" : "text"} onClick={()=>{gotoPage(row)}}>
+                {row}
+                </Button>
+              ))}
+              <Button style={{ right:0 }} onClick={()=>{loadnextpage()}} disabled={currentPage==pageCount}> next </Button>
+              <Button style={{ right:0 }} onClick={()=>{gotolast()}} > last </Button>
             </TableContainer>
           </div>
 
